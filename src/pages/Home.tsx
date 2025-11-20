@@ -1,5 +1,5 @@
 import type {ApiResponseListMerchantListRes} from "../types.ts";
-import { MerchantBizTypeBarChart } from "../components/charts/MerchantBizTypeBarChart";
+import { MerchantBizTypeBarChart } from "../components/MerchantBizTypeBarChart";
 import {useFetch} from "../api/useFetch.ts";
 
 export const Home = () => {

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import type { MerchantListRes } from "../../types.ts";
+import type { MerchantListRes } from "../types.ts";
 
 interface MerchantBizTypeBarChartProps {
   merchants: MerchantListRes[];
