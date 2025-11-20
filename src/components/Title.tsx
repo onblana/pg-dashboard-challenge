@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 const ROUTE_TITLES: Record<string, string> = {
   "/": "대시보드",
   "/merchants": "가맹점 현황",
-  "/payments": "결제 내역",
+  "/payments": "거래내역",
   "/settings": "설정",
 };
 
