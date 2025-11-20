@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "./apiClient.ts";
 
-export const useFetch = <T>(url: string) => {
+export const useFetch = <T>(url: string | null) => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<unknown>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(url));
 
   useEffect(() => {
+    if (!url) {
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
+    setLoading(true);
+    setError(null);
 
     apiClient
       .get<T>(url)
