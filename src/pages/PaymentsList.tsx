@@ -21,7 +21,7 @@ export function PaymentsList() {
   const payments = data?.data ?? [];
 
   return (
-    <section>
+    <section className="px-4">
       <Table data={payments} columns={columns} pageSize={10} />
     </section>
   );

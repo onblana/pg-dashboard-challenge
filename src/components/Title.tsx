@@ -9,7 +9,7 @@ const ROUTE_TITLES: Record<string, string> = {
 
 export function Title() {
   const { pathname } = useLocation();
-  const [ , title ] =
+  const [ _, title ] =
     Object.entries(ROUTE_TITLES).find(([route]) =>
       route === "/" ? pathname === "/" : pathname.startsWith(route),
     ) ?? ["*", "PG Dashboard"];

@@ -36,24 +36,23 @@ export function Table<T extends object>({
     const start = (page - 1) * pageSize;
     return data.slice(start, start + pageSize);
   }, [data, page, pageSize]);
+  const startIndex = (page - 1) * pageSize;
 
   const gotoPage = (next: number) => {
     setPage(Math.min(Math.max(next, 1), totalPages));
   };
 
-  const from = data.length ? (page - 1) * pageSize + 1 : 0;
-  const to = Math.min(page * pageSize, data.length);
-
   return (
-    <div className="table-card">
-      <table className="table">
+    <div className="grid bg-white rounded-2xl">
+      <table className="mb-5">
         <thead>
           <tr>
+            <th className="py-3 px-4 border-b border-slate-400 text-md text-slate-600 text-center w-16">순번</th>
             {columns.map((column) => {
               return (
                 <th
                   key={String(column.key)}
-                  className="py-3 border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400"
+                  className="py-3 px-10 border-b border-slate-400 text-md text-slate-600 text-center"
                 >
                   {column.header}
                 </th>
@@ -64,19 +63,29 @@ export function Table<T extends object>({
         <tbody>
           {paginatedData.length === 0 ? (
             <tr>
-              <td className="table__empty" colSpan={columns.length}>
+              <td className="" colSpan={columns.length + 1}>
                 {emptyText}
               </td>
             </tr>
           ) : (
             paginatedData.map((row, rowIndex) => (
-              <tr key={rowIndex}>
+              <tr
+                key={rowIndex}
+                className="transition-colors hover:bg-slate-50 cursor-pointer"
+                onClick={() => {
+                  const merchantCode = (row as Record<string, unknown>).mchtCode;
+                  console.log(merchantCode ?? "mchtCode 없음");
+                }}
+              >
+                <td className="py-3 border-b border-slate-100 text-slate-500 text-center">
+                  {startIndex + rowIndex + 1}
+                </td>
                 {columns.map((column) => {
                   const value = row[column.key as keyof T];
                   return (
                     <td
                       key={String(column.key)}
-                      className="py-3 border-b border-slate-100 text-slate-900"
+                      className="py-3 border-b border-slate-100 text-slate-900 text-center"
                     >
                       {column.render ? column.render(row) : (value as ReactNode) ?? "-"}
                     </td>
@@ -88,25 +97,25 @@ export function Table<T extends object>({
         </tbody>
       </table>
 
-      <div className="table-pagination">
-        <div className="table-pagination__info">
-          {from}-{to} / {data.length || 0}
+      <div className="flex items-center justify-between gap-2 w-[50vw]">
+        <div className="">
+          총 {data.length || 0}건
         </div>
-        <div className="table-pagination__actions">
+        <div className="flex items-center gap-4">
           <button
             type="button"
-            className="table-pagination__btn"
+            className=""
             onClick={() => gotoPage(page - 1)}
             disabled={page === 1}
           >
             이전
           </button>
-          <span className="table-pagination__page">
+          <span className="">
             {page} / {totalPages}
           </span>
           <button
             type="button"
-            className="table-pagination__btn"
+            className=""
             onClick={() => gotoPage(page + 1)}
             disabled={page === totalPages}
           >

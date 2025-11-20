@@ -25,12 +25,13 @@ body {
 .app-shell {
   display: flex;
   min-height: 100vh;
+  min-width: 100vw;
   background: #f1f5f9;
 }
 
 .app-content {
   flex: 1;
-  padding: 40px;
+  padding: 10px;
   overflow-y: auto;
 }
 
@@ -105,8 +106,8 @@ body {
 
 .title-bar {
   background-color: white;
-  border-radius: 18px;
-  padding: 24px 28px;
+  border-radius: 16px;
+  padding: 14px 28px;
   margin: 0 0 24px;
   width: 100%;
   box-shadow:
@@ -123,8 +124,8 @@ body {
 
 .title-bar__title {
   margin: 4px 0;
-  font-size: 1.8rem;
-  font-weight: 600;
+  font-size: 1.7rem;
+  font-weight: 500;
   color: #0f172a;
 }
 
