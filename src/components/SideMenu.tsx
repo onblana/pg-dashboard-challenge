@@ -8,7 +8,6 @@ type MenuItem = {
 const MENU_ITEMS: MenuItem[] = [
   { label: "대시보드", to: "/" },
   { label: "거래내역", to: "/payments" },
-  { label: "가맹점", to: "/merchants" },
 ];
 
 const linkClass =
