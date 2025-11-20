@@ -2,11 +2,21 @@ import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import type { MerchantListRes } from "../../types.ts";
 
-interface Props {
+interface MerchantBizTypeBarChartProps {
   merchants: MerchantListRes[];
 }
 
 const buildBizTypeCountData = (merchants: MerchantListRes[]) => {
+  const BIZ_TYPE_LABEL: Record<string, string> = {
+    CAFE: "카페",
+    SHOP: "쇼핑",
+    MART: "마트",
+    APP: "앱",
+    TRAVEL: "여행",
+    EDU: "교육",
+    TEST: "테스트",
+  };
+
   const map = new Map<string, number>();
 
   merchants.forEach(m => {
@@ -16,26 +26,28 @@ const buildBizTypeCountData = (merchants: MerchantListRes[]) => {
 
   // Recharts 사용가능 데이터타입으로 변환
   return Array.from(map.entries()).map(([bizType, count]) => ({
-    bizType,
+    bizType: BIZ_TYPE_LABEL[bizType] ?? bizType,
     count,
   }));
 }
 
-export const MerchantBizTypeBarChart = ({ merchants }: Props) => {
+export const MerchantBizTypeBarChart = ({ merchants }: MerchantBizTypeBarChartProps) => {
   const data = useMemo(() => buildBizTypeCountData(merchants), [merchants]);
 
   return (
-    <div className="w-full h-72 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h2 className="mb-3 text-sm font-semibold text-slate-600">
+    <div className="w-full h-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <h2 className="mb-3 text-2xl font-semibold text-slate-600">
         업종별 가맹점 수
       </h2>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width={800} height={400}>
         <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="bizType" />
           <YAxis allowDecimals={false} />
-          <Tooltip />
-          <Bar dataKey="count" />
+          <Tooltip
+            formatter={(value: number) => `${value}개`}
+          />
+          <Bar dataKey="count" name="가맹점 수" />
         </BarChart>
       </ResponsiveContainer>
     </div>
