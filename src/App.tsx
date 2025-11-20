@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import { Home } from './pages/Home'
 import { PaymentsList } from './pages/PaymentsList'
+import { MerchantsDetail } from './pages/MerchantsDetail'
 import NotFound from './pages/NotFound'
 import { SideMenu } from './components/SideMenu'
 import { Title } from './components/Title'
@@ -15,6 +16,7 @@ function App() {
         <div className="app-page">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/merchants/:mchtCode" element={<MerchantsDetail />} />
             <Route path="/payments" element={<PaymentsList />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
