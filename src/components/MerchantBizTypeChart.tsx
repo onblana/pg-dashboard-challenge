@@ -2,10 +2,6 @@ import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import type { MerchantListRes } from "../types.ts";
 
-interface MerchantBizTypeBarChartProps {
-  merchants: MerchantListRes[];
-}
-
 const buildBizTypeCountData = (merchants: MerchantListRes[]) => {
   const BIZ_TYPE_LABEL: Record<string, string> = {
     CAFE: "카페",
@@ -31,8 +27,12 @@ const buildBizTypeCountData = (merchants: MerchantListRes[]) => {
   }));
 }
 
-export const MerchantBizTypeBarChart = ({ merchants }: MerchantBizTypeBarChartProps) => {
-  const data = useMemo(() => buildBizTypeCountData(merchants), [merchants]);
+type Props = {
+  merchants: MerchantListRes[];
+};
+
+export const MerchantBizTypeChart = ({ merchants }: Props) => {
+  const chartData = useMemo(() => buildBizTypeCountData(merchants), [merchants]);
 
   return (
     <div className="w-full h-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -40,7 +40,7 @@ export const MerchantBizTypeBarChart = ({ merchants }: MerchantBizTypeBarChartPr
         업종별 가맹점 수
       </h2>
       <ResponsiveContainer width={800} height={400}>
-        <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+        <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="bizType" />
           <YAxis allowDecimals={false} />
