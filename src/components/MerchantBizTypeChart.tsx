@@ -1,8 +1,12 @@
 import { useMemo } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import {BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell} from "recharts";
 import type { MerchantListRes } from "../types.ts";
+import {Card} from "./Card.tsx";
+
+const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#3B82F6", "#F59E0B", "#10B981", "#14B8A6"];
 
 const buildBizTypeCountData = (merchants: MerchantListRes[]) => {
+
   const BIZ_TYPE_LABEL: Record<string, string> = {
     CAFE: "카페",
     SHOP: "쇼핑",
@@ -35,11 +39,11 @@ export const MerchantBizTypeChart = ({ merchants }: Props) => {
   const chartData = useMemo(() => buildBizTypeCountData(merchants), [merchants]);
 
   return (
-    <div className="w-full h-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h2 className="mb-3 text-2xl font-semibold text-slate-600">
+    <Card>
+      <h2 className="text-xl font-semibold text-slate-600 mb-6">
         업종별 가맹점 수
       </h2>
-      <ResponsiveContainer width={800} height={400}>
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="bizType" />
@@ -47,9 +51,13 @@ export const MerchantBizTypeChart = ({ merchants }: Props) => {
           <Tooltip
             formatter={(value: number) => `${value}개`}
           />
-          <Bar dataKey="count" name="가맹점 수" />
+          <Bar dataKey="count" name="가맹점 수">
+            {chartData.map((_, index) => (
+              <Cell key={`bar-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </Card>
   );
 }

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from "recharts";
 import type { PaymentListRes } from "../types.ts";
 import { useCommonCodes } from "../contexts/CommonCodeContext.tsx";
+import { Card } from "./Card.tsx";
 
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#3B82F6", "#F59E0B", "#10B981", "#14B8A6"];
 
@@ -49,8 +50,8 @@ export function PaymentAmountChart({ payments }: Props) {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
-      <h2 className="text-lg font-semibold text-slate-900 mb-4">결제 수단별 금액 비중</h2>
+    <Card>
+      <h2 className="mb-6 text-xl font-semibold text-slate-600">결제 수단별 금액 비중</h2>
       <div className="w-full h-80">
         <ResponsiveContainer>
           <PieChart>
@@ -67,10 +68,14 @@ export function PaymentAmountChart({ payments }: Props) {
               ))}
             </Pie>
             <Tooltip formatter={(value: number) => value.toLocaleString()} />
-            <Legend />
+            <Legend
+              formatter={(value, entry) =>
+                (entry && "payload" in entry && (entry.payload as any).label) || value
+              }
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Card>
   );
 }
