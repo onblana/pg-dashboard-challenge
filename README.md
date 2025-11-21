@@ -3,7 +3,7 @@
 Vite + React + TypeScript 기반의 대시보드 구현 프로젝트입니다.
 
 ## Tech Stack
-- React with TypeScript
+- **React with TypeScript**
 - **Build Tool**: Vite
 - **Node.js**: v20.19.5
 - **Styling**: Tailwind CSS
@@ -13,4 +13,5 @@ Vite + React + TypeScript 기반의 대시보드 구현 프로젝트입니다.
 ## Features
 - PG 도메인의 거래/정산 데이터를 시각화하는 대시보드 구현
 - 주요 지표 차트 제공
-- 기본적인 필터링 UI 구성
+- 거래내역 리스트 페이지 제공
+- 가맹점 상세 정보 페이지 제공
