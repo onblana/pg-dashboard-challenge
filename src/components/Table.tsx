@@ -31,12 +31,12 @@ const formatCellValue = (value: unknown, header?: string): ReactNode => {
   return value as ReactNode;
 };
 
-export function Table<T extends object>({
+export const Table = <T extends object> ({
   data,
   columns,
   pageSize = PAGE_SIZE_DEFAULT,
   emptyText = "표시할 데이터가 없습니다.",
-}: TableProps<T>) {
+}: TableProps<T>) => {
   const [page, setPage] = useState(1);
   const [selectedMerchantCode, setSelectedMerchantCode] = useState<string | null>(null);
   const navigate = useNavigate();
