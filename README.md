@@ -23,12 +23,12 @@ Recharts
 패키지명: recharts
 출처: https://recharts.org/
 
-사용한 목적
+### 사용한 목적
 
 PG 대시보드의 핵심 지표(가맹점 통계, 결제 데이터 분포 등)를 시각적으로 직관적으로 보여주기 위해
 BarChart, PieChart, ResponsiveContainer 등 Recharts 컴포넌트를 사용했습니다.
 
-그대로 사용한 부분
+### 그대로 사용한 부분
 
 기본 제공되는 BarChart, PieChart, XAxis, YAxis, Tooltip, Legend 컴포넌트
 
@@ -36,7 +36,7 @@ ResponsiveContainer를 통해 차트의 반응형 레이아웃 구현
 
 Cell을 사용한 PieChart 색상 매핑
 
-커스터마이징한 부분
+### 커스터마이징한 부분
 
 공통코드(API)에서 받아온 결제수단·결제상태·가맹점상태를 Context에 저장하고
 차트 범례(label)와 Tooltip 표기를 한국어로 매핑해 표시
