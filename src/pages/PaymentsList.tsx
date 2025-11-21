@@ -5,7 +5,7 @@ import { useFetch } from "../api/useFetch.ts";
 const columns: TableColumn<PaymentListRes>[] = [
   { key: "paymentCode", header: "거래 ID" },
   { key: "mchtCode", header: "가맹점 코드" },
-  { key: "amount", header: "금액" },
+  { key: "amount", header: "금액(원)", align: "right" },
   { key: "currency", header: "통화" },
   { key: "payType", header: "결제수단" },
   { key: "status", header: "상태" },
@@ -21,7 +21,7 @@ export function PaymentsList() {
   const payments = data?.data ?? [];
 
   return (
-    <section className="px-4">
+    <section>
       <Table data={payments} columns={columns} pageSize={10} />
     </section>
   );

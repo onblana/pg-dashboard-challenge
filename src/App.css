@@ -116,19 +116,13 @@ body {
   border: 1px solid #e2e8f0;
 }
 
-.title-bar__heading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.title-bar__title {
-  margin: 4px 0;
-  font-size: 1.7rem;
-  font-weight: 500;
-  color: #0f172a;
-}
-
 .app-page {
   min-height: calc(100vh - 200px);
+}
+
+.table-container {
+  box-shadow:
+    0 10px 15px -10px rgba(15, 23, 42, 0.15),
+    0 4px 6px -4px rgba(15, 23, 42, 0.1);
+  border: 1px solid #e2e8f0;
 }
