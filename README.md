@@ -17,11 +17,8 @@ Vite + React + TypeScript 기반의 대시보드 구현 프로젝트입니다.
 - 가맹점 상세 정보 페이지 제공
 
 ## Recharts 라이브러리 사용 내역
-사용한 라이브러리
-
-Recharts
-패키지명: recharts
-출처: https://recharts.org/
+- 패키지명: recharts
+- 출처: https://recharts.org/
 
 ### 사용한 목적
 PG 대시보드의 핵심 지표(가맹점 통계, 결제 데이터 분포 등)를 시각적으로 직관적으로 보여주기 위해
