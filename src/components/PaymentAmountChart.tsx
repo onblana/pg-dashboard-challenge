@@ -6,6 +6,14 @@ import { Card } from "./Card.tsx";
 
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#3B82F6", "#F59E0B", "#10B981", "#14B8A6"];
 
+const FALLBACK_PAYTYPE_LABEL: Record<string, string> = {
+  ONLINE: "온라인",
+  DEVICE: "단말기",
+  MOBILE: "모바일",
+  VACT: "가상계좌",
+  BILLING: "정기결제",
+};
+
 const aggregateAmountsByPayType = (payments: PaymentListRes[]) => {
   const map = new Map<string, number>();
 
@@ -28,22 +36,21 @@ type Props = {
 export function PaymentAmountChart({ payments }: Props) {
   const { paymentTypes } = useCommonCodes();
 
-  const typeDescriptionMap = useMemo(
-    () =>
-      paymentTypes.reduce<Record<string, string>>((acc, cur) => {
-        acc[cur.type] = cur.description;
-        return acc;
-      }, {}),
-    [paymentTypes],
-  );
-
   const chartData = useMemo(() => {
     const aggregated = aggregateAmountsByPayType(payments);
-    return aggregated.map((item) => ({
-      ...item,
-      label: typeDescriptionMap[item.payType] ?? item.payType,
-    }));
-  }, [payments, typeDescriptionMap]);
+    return aggregated.map((item) => {
+      const found = paymentTypes.find((t) => t.type === item.payType);
+      const label =
+        found?.description ??
+        FALLBACK_PAYTYPE_LABEL[item.payType] ??
+        item.payType;
+
+      return {
+        ...item,
+        label,
+      };
+    });
+  }, [payments, paymentTypes]);
 
   if (chartData.length === 0) {
     return <p>표시할 결제 데이터가 없습니다.</p>;
@@ -68,11 +75,7 @@ export function PaymentAmountChart({ payments }: Props) {
               ))}
             </Pie>
             <Tooltip formatter={(value: number) => value.toLocaleString()} />
-            <Legend
-              formatter={(value, entry) =>
-                (entry && "payload" in entry && (entry.payload as any).label) || value
-              }
-            />
+            <Legend />
           </PieChart>
         </ResponsiveContainer>
       </div>
