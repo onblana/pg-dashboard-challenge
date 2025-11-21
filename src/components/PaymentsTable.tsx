@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFetch } from "../api/useFetch.ts";
-import type { ApiResponseMerchantDetailRes } from "../types.ts";
+import type { ApiResponseMerchantDetailRes, PayTypeRes, StatusRes } from "../types.ts";
+import { useCommonCodes } from "../contexts/CommonCodeContext.tsx";
 
 type TableKey<T> = Extract<keyof T, string | number | symbol>;
 
@@ -22,16 +23,64 @@ type TableProps<T> = {
 
 const PAGE_SIZE_DEFAULT = 10;
 
-const formatCellValue = (value: unknown, header?: string): ReactNode => {
-  if (header === "금액(원)") {
+const formatCellValue = (
+  value: unknown,
+  key: string,
+  paymentTypes: PayTypeRes[],
+  paymentStatuses: StatusRes[],
+): ReactNode => {
+
+  // api 공통코드 매칭 실패 시의 폴백
+  const FALLBACK_PAYTYPE_LABEL: Record<string, string> = {
+    ONLINE: "온라인",
+    DEVICE: "단말기",
+    MOBILE: "모바일",
+    VACT: "가상계좌",
+    BILLING: "정기결제",
+  };
+
+  // api 공통코드 매칭 실패 시의 폴백
+  const FALLBACK_STATUS_LABEL: Record<string, string> = {
+    SUCCESS: "성공",
+    FAILED: "실패",
+    CANCELLED: "취소",
+    PENDING: "대기",
+  };
+
+  if (key === "payType") {
+    const found = paymentTypes.find((x) => x.type === value);
+    return found ? found.description : FALLBACK_PAYTYPE_LABEL[String(value)] ?? (value as ReactNode);
+  }
+
+  if (key === "status") {
+    const found = paymentStatuses.find((x) => x.code === value);
+    return found ? found.description : FALLBACK_STATUS_LABEL[String(value)] ?? (value as ReactNode);
+  }
+
+  if (key === "paymentAt") {
+    if (!value) return "-";
+    const date = new Date(String(value));
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    });
+  }
+
+  if (key === "amount") {
     if (value === undefined || value === null || value === "") return "-";
     const num = Number(value);
-    return Number.isNaN(num) ? value as ReactNode : num.toLocaleString();
+    return Number.isNaN(num) ? (value as ReactNode) : num.toLocaleString();
   }
+
   return value as ReactNode;
 };
 
-export const Table = <T extends object> ({
+export const PaymentsTable = <T extends object> ({
   data,
   columns,
   pageSize = PAGE_SIZE_DEFAULT,
@@ -40,6 +89,7 @@ export const Table = <T extends object> ({
   const [page, setPage] = useState(1);
   const [selectedMerchantCode, setSelectedMerchantCode] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { paymentTypes, paymentStatuses } = useCommonCodes();
 
   const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
 
@@ -135,7 +185,7 @@ export const Table = <T extends object> ({
                       key={String(column.key)}
                       className={`border-b border-slate-200 text-slate-900 ${align}`}
                     >
-                      {column.render ? column.render(row) : formatCellValue(value, column.header)}
+                      {column.render ? column.render(row) : formatCellValue(value, String(column.key), paymentTypes, paymentStatuses)}
                     </td>
                   );
                 })}

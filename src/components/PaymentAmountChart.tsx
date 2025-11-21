@@ -6,6 +6,7 @@ import { Card } from "./Card.tsx";
 
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#3B82F6", "#F59E0B", "#10B981", "#14B8A6"];
 
+// api 공통코드 매칭 실패 시의 폴백
 const FALLBACK_PAYTYPE_LABEL: Record<string, string> = {
   ONLINE: "온라인",
   DEVICE: "단말기",

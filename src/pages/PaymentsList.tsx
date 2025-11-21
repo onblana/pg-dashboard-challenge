@@ -1,5 +1,5 @@
 import type { ApiResponseListPaymentListRes, PaymentListRes } from "../types.ts";
-import { Table, type TableColumn } from "../components/Table";
+import { PaymentsTable, type TableColumn } from "../components/PaymentsTable.tsx";
 import { useFetch } from "../api/useFetch.ts";
 
 const columns: TableColumn<PaymentListRes>[] = [
@@ -22,7 +22,7 @@ export function PaymentsList() {
 
   return (
     <section>
-      <Table data={payments} columns={columns} pageSize={10} />
+      <PaymentsTable data={payments} columns={columns} pageSize={10} />
     </section>
   );
 }
