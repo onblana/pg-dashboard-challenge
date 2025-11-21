@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import { useFetch } from "../api/useFetch.ts";
+import type { ApiResponseMerchantDetailRes } from "../types.ts";
 
 type TableKey<T> = Extract<keyof T, string | number | symbol>;
 
@@ -7,6 +10,7 @@ export type TableColumn<T> = {
   key: TableKey<T>;
   header: string;
   render?: (row: T) => ReactNode;
+  align?: "left" | "center" | "right";
 };
 
 type TableProps<T> = {
@@ -18,6 +22,15 @@ type TableProps<T> = {
 
 const PAGE_SIZE_DEFAULT = 10;
 
+const formatCellValue = (value: unknown, header?: string): ReactNode => {
+  if (header === "금액(원)") {
+    if (value === undefined || value === null || value === "") return "-";
+    const num = Number(value);
+    return Number.isNaN(num) ? value as ReactNode : num.toLocaleString();
+  }
+  return value as ReactNode;
+};
+
 export function Table<T extends object>({
   data,
   columns,
@@ -25,6 +38,8 @@ export function Table<T extends object>({
   emptyText = "표시할 데이터가 없습니다.",
 }: TableProps<T>) {
   const [page, setPage] = useState(1);
+  const [selectedMerchantCode, setSelectedMerchantCode] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
 
@@ -37,22 +52,47 @@ export function Table<T extends object>({
     return data.slice(start, start + pageSize);
   }, [data, page, pageSize]);
   const startIndex = (page - 1) * pageSize;
+  const detailUrl = selectedMerchantCode ? `/merchants/details/${selectedMerchantCode}` : null;
+  const { data: merchantDetail, error: merchantError } =
+    useFetch<ApiResponseMerchantDetailRes>(detailUrl);
+
+  useEffect(() => {
+    if (merchantDetail?.data && selectedMerchantCode) {
+      navigate(`/merchants/${selectedMerchantCode}`, {
+        state: merchantDetail.data,
+      });
+      setSelectedMerchantCode(null);
+    }
+  }, [merchantDetail, selectedMerchantCode, navigate]);
+
+  useEffect(() => {
+    if (merchantError) {
+      console.error("가맹점 상세 조회에 실패했습니다.", merchantError);
+      setSelectedMerchantCode(null);
+    }
+  }, [merchantError]);
 
   const gotoPage = (next: number) => {
     setPage(Math.min(Math.max(next, 1), totalPages));
   };
 
   return (
-    <div className="grid bg-white rounded-2xl">
+    <div className="table-container grid bg-white rounded-2xl px-4 py-2">
       <table className="mb-5">
         <thead>
           <tr>
-            <th className="py-3 px-4 border-b border-slate-400 text-md text-slate-600 text-center w-16">순번</th>
+            <th className="px-4 border-b border-slate-400 text-md text-slate-600 text-center w-16">순번</th>
             {columns.map((column) => {
+              const align =
+                column.align === "right"
+                  ? "text-right"
+                  : column.align === "left"
+                    ? "text-left"
+                    : "text-center";
               return (
                 <th
                   key={String(column.key)}
-                  className="py-3 px-10 border-b border-slate-400 text-md text-slate-600 text-center"
+                  className={`py-3 px-10 border-b border-slate-400 text-md text-slate-600 ${align}`}
                 >
                   {column.header}
                 </th>
@@ -71,23 +111,31 @@ export function Table<T extends object>({
             paginatedData.map((row, rowIndex) => (
               <tr
                 key={rowIndex}
-                className="transition-colors hover:bg-slate-50 cursor-pointer"
+                className="transition-colors hover:bg-slate-200 cursor-pointer"
                 onClick={() => {
                   const merchantCode = (row as Record<string, unknown>).mchtCode;
-                  console.log(merchantCode ?? "mchtCode 없음");
+                  if (typeof merchantCode === "string") {
+                    setSelectedMerchantCode(merchantCode);
+                  }
                 }}
               >
-                <td className="py-3 border-b border-slate-100 text-slate-500 text-center">
+                <td className="py-3 border-b border-slate-200 text-slate-500 text-center">
                   {startIndex + rowIndex + 1}
                 </td>
                 {columns.map((column) => {
                   const value = row[column.key as keyof T];
+                  const align =
+                    column.align === "right"
+                      ? "text-right"
+                      : column.align === "left"
+                        ? "text-left"
+                        : "text-center";
                   return (
                     <td
                       key={String(column.key)}
-                      className="py-3 border-b border-slate-100 text-slate-900 text-center"
+                      className={`border-b border-slate-200 text-slate-900 ${align}`}
                     >
-                      {column.render ? column.render(row) : (value as ReactNode) ?? "-"}
+                      {column.render ? column.render(row) : formatCellValue(value, column.header)}
                     </td>
                   );
                 })}
