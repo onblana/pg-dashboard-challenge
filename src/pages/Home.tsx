@@ -24,13 +24,32 @@ export const Home = () => {
 
   const merchants = merchantRes?.data ?? [];
   const payments = paymentRes?.data ?? [];
+  const merchantCount = merchants.length;
+  const totalKrwAmount = payments.reduce((sum, { amount, currency }) => {
+    if (currency !== "KRW") return sum;
+    const numericAmount = Number(amount);
+    return sum + (Number.isNaN(numericAmount) ? 0 : numericAmount);
+  }, 0);
+  const totalPayments = payments.length;
+  const successCount = payments.filter(({ status }) => status === "SUCCESS").length;
+  const successRate =
+    totalPayments > 0 ? (successCount / totalPayments) * 100 : 0;
 
   return (
     <section>
-      <div className="grid grid-cols-3 mb-4">
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
+      <div className="grid grid-cols-3 mb-2 gap-2">
+        <Card>
+          <h3 className="text-sm text-slate-500 mb-1">총 가맹점 수</h3>
+          <p className="text-2xl font-bold">{merchantCount.toLocaleString()}개</p>
+        </Card>
+        <Card>
+          <h3 className="text-sm text-slate-500 mb-1">총 결제 금액 (KRW)</h3>
+          <p className="text-2xl font-bold">{totalKrwAmount.toLocaleString()}원</p>
+        </Card>
+        <Card>
+          <h3 className="text-sm text-slate-500 mb-1">결제 성공률</h3>
+          <p className="text-2xl font-bold">{successRate.toFixed(1)}%</p>
+        </Card>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <PaymentAmountChart payments={payments} />
